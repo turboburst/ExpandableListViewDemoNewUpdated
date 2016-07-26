@@ -9,8 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.turbo.expandablelistviewdemo.ItemBeans.ChildItemBean;
 import com.example.turbo.expandablelistviewdemo.ItemBeans.GroupItemBean;
@@ -56,7 +56,7 @@ public class MyExpandableListViewAdapter extends AnimatedExpandableListAdapter {
     @Override
     public View getRealChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         ChildItemHolder childItemHolder = null;
-        ProgressBar tempProgressBar = null;
+        /*ProgressBar tempProgressBar = null;*/
         TextView tempTextView = null;
         ImageView tempImageView = null;
         if (convertView == null) {
@@ -67,10 +67,10 @@ public class MyExpandableListViewAdapter extends AnimatedExpandableListAdapter {
             childItemHolder = (ChildItemHolder) convertView.getTag();
         }
 
-        tempProgressBar = (ProgressBar) convertView.findViewById(R.id.childItemProgressbarId);
+       /* tempProgressBar = (ProgressBar) convertView.findViewById(R.id.childItemProgressbarId);*/
         tempTextView = (TextView) convertView.findViewById(R.id.childItemTVId);
         tempImageView = (ImageView) convertView.findViewById(R.id.childItemIMId);
-        childItemHolder.setProgressBar(tempProgressBar);
+        /*childItemHolder.setProgressBar(tempProgressBar);*/
         childItemHolder.setTextView(tempTextView);
         childItemHolder.setImageView(tempImageView);
         tempTextView.setText(childItems.get(groupPosition).get(childPosition).getChildItemName().toString());
@@ -122,8 +122,11 @@ public class MyExpandableListViewAdapter extends AnimatedExpandableListAdapter {
     {
         LinkedList<ChildItemBean> itemBeen = new LinkedList<ChildItemBean>();
         itemBeen.add(new ChildItemBean(R.mipmap.ic_launcher, str));
+        itemBeen.add(new ChildItemBean(R.mipmap.ic_launcher, str + " world"));
+
         childItems.set(0, itemBeen);
-        notifyDataSetChanged();
+
+        Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
     }
 }
 
@@ -143,7 +146,7 @@ class GroupItemHolder
 
 class ChildItemHolder
 {
-    private ProgressBar progressBar;
+    /*private ProgressBar progressBar;*/
     private TextView textView;
     private ImageView imageView;
 
@@ -154,8 +157,8 @@ class ChildItemHolder
     public void setImageView(ImageView imageView) {
         this.imageView = imageView;
     }
-    public void setProgressBar(ProgressBar progressBar)
+    /*public void setProgressBar(ProgressBar progressBar)
     {
         this.progressBar = progressBar;
-    }
+    }*/
 }

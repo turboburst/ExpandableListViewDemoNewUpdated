@@ -1,14 +1,16 @@
-package com.example.turbo.expandablelistviewdemo;
+package com.example.turbo.expandablelistviewdemo.Activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ExpandableListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.turbo.expandablelistviewdemo.Adapters.MyExpandableListViewAdapter;
 import com.example.turbo.expandablelistviewdemo.ItemBeans.ChildItemBean;
 import com.example.turbo.expandablelistviewdemo.ItemBeans.GroupItemBean;
+import com.example.turbo.expandablelistviewdemo.R;
 import com.example.turbo.expandablelistviewdemo.Views.AnimatedExpandableListView;
 import com.example.turbo.expandablelistviewdemo.WebRequests.MenuRequest;
 
@@ -20,13 +22,19 @@ public class MainActivity extends AppCompatActivity {
     private MyExpandableListViewAdapter expandableListAdapter;
     private LinkedList<GroupItemBean> groupItems;
     private LinkedList<LinkedList<ChildItemBean>> childItems;
-    private MenuRequest menuRequest;
+    private MenuRequest mainMenuRequest;
+    private MenuRequest subMenuRequest;
+    private int currentGroupItemPosition;
+    private ProgressBar currentProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mainMenuRequest = new MenuRequest(MainActivity.this, "https://www.google.ca");
+        mainMenuRequest.sendMenuRequest();
 
         groupItems = new LinkedList<GroupItemBean>();
         for(int i = 1; i < 7; i++)
@@ -53,17 +61,18 @@ public class MainActivity extends AppCompatActivity {
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(final ExpandableListView expandableListView, View view, int groupItemPostion, long l) {
+                currentProgressBar = (ProgressBar) expandableListAdapter.getGroupView(groupItemPostion, false, view, null).findViewById(R.id.groupItemProgressBarId);
+                currentGroupItemPosition = groupItemPostion;
                 if(expandableListView.isGroupExpanded(groupItemPostion))
                 {
                     ((AnimatedExpandableListView)expandableListView).collapseGroupWithAnimation(groupItemPostion);
                 }
                 else
                 {
-                    ((AnimatedExpandableListView)expandableListView).expandGroupWithAnimation(groupItemPostion);
+                    currentProgressBar.setVisibility(View.VISIBLE);
+                    subMenuRequest = new MenuRequest(MainActivity.this, "https://www.baidu.com");
+                    subMenuRequest.sendMenuRequest();
                 }
-
-                menuRequest = new MenuRequest(MainActivity.this, "https://www.baidu.com");
-                menuRequest.sendMenuRequest();
                 return true;
             }
         });
@@ -75,14 +84,19 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-
     }
 
-    public void RefreshActivity(String str, int Image)
+    public void RefreshMainMenu(String str, int Image)
+    {
+        Toast.makeText(MainActivity.this, str, Toast.LENGTH_SHORT).show();
+    }
+
+    public void RefreshSubMenu(String str, int Image)
     {
         expandableListAdapter.RefreshAdapter(str);
-
-
+        expandableListAdapter.notifyDataSetChanged();
+        currentProgressBar.setVisibility(View.GONE);
+        expandableListView.expandGroupWithAnimation(currentGroupItemPosition);
+        expandableListAdapter.getRealChildView(0, 0, false, null, null);
     }
 }

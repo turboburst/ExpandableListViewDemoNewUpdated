@@ -9,7 +9,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.turbo.expandablelistviewdemo.Constants.AppControler;
-import com.example.turbo.expandablelistviewdemo.MainActivity;
+import com.example.turbo.expandablelistviewdemo.Activities.MainActivity;
 
 /**
  * Created by turbo on 2016/7/26.
@@ -30,8 +30,16 @@ public class MenuRequest{
         stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                ((MainActivity)context).RefreshActivity("Hello", -1);
                 Toast.makeText(context, "success", Toast.LENGTH_SHORT).show();
+                if(url.equals("https://www.google.ca"))
+                {
+                    ((MainActivity)context).RefreshMainMenu("Main", -1);
+                }
+                else if(url.equals("https://www.baidu.com"))
+                {
+                    ((MainActivity)context).RefreshSubMenu("Sub", -1);
+                }
+
             }
         }, new Response.ErrorListener() {
             @Override
